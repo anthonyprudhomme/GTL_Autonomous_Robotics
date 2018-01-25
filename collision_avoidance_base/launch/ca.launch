@@ -1,0 +1,32 @@
+<launch>
+
+    <!-- Instantiate your teleoperation node here -->
+
+  <node pkg="collision_avoidance_base" type="collision_avoidance_base" name="coll_avoid" output="screen">
+      launch-prefix="xterm -e gdb --args"
+      <param name="radius" value="1.0" />
+      <param name="side_threshold" value="0.3" />
+      <param name="min_distance_threshold" value="0.5" />
+      <param name="max_distance_threshold" value="1.0" />
+
+      <remap from="~scans" to="/vrep/hokuyoSensor"/>
+      <remap from="~cmd_vel" to="/joy_command"/>
+      <remap from="~joy_cmd" to="/joy"/>
+      <remap from="~output_vel" to="/vrep/twistCommand"/> -->
+  </node>
+
+<!-- joy node -->
+  <node respawn="true" pkg="joy"
+    type="joy_node" name="robot_joy" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+ <!-- Axes -->
+  <param name="axis_linear" value="1" type="int"/>
+  <param name="axis_angular" value="0" type="int"/>
+  <param name="scale_linear" value="2" type="double"/>
+  <param name="scale_angular" value="2" type="double"/>
+  <node pkg="learning_joy" type="robot_teleop_joy_collision" name="teleop"/>
+
+</launch>
