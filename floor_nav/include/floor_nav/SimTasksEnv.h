@@ -9,6 +9,7 @@
 #include "geometry_msgs/Pose2D.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "sensor_msgs/LaserScan.h"
+#include "face_detect_base/ROIArray.h"
 #include "pcl_ros/point_cloud.h"
 #include "pcl/point_types.h"
 #include <tf/transform_listener.h>
@@ -23,6 +24,7 @@ namespace floor_nav {
             ros::Subscriber pointCloudSub;
             ros::Subscriber pointCloud2DSub;
             ros::Subscriber laserscanSub;
+			ros::Subscriber faceDetectorSub;
             ros::Publisher velPub;
             ros::ServiceClient muxClient;
             tf::TransformListener listener;
@@ -32,6 +34,7 @@ namespace floor_nav {
             void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr msg) ;
             void pointCloud2DCallback(const sensor_msgs::PointCloud2ConstPtr msg) ;
             void laserScanCallback(const sensor_msgs::LaserScanConstPtr msg) ;
+			void faceDetectedCallback(const face_detect_base::ROIArray msg) ;
 
             bool manualControl;
             std::string joystick_topic;
@@ -40,6 +43,8 @@ namespace floor_nav {
             std::string reference_frame;
             pcl::PointCloud<pcl::PointXYZ> pointCloud;
             pcl::PointCloud<pcl::PointXYZ> pointCloud2D;
+            face_detect_base::ROIArray faces;
+            face_detect_base::ROIArray faces_detected_during_task;
 
         public:
             SimTasksEnv(ros::NodeHandle & nh);
@@ -66,6 +71,8 @@ namespace floor_nav {
 
             const std::string & getReferenceFrame() const {return reference_frame;}
             const std::string & getBaseFrame() const {return base_frame;}
+			face_detect_base::ROIArray getFaces();
+            face_detect_base::ROIArray getFacesDetectedDuringTask() const;
         public: // To make point cloud work on 32bit system
             EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     };

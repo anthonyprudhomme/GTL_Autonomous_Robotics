@@ -47,6 +47,10 @@ generate_dynamic_reconfigure_options(
   cfg/TaskWander.cfg
 )
 
+find_package(message_generation)
+catkin_package(CATKIN_DEPENDS message_runtime)
+add_message_files(FILES ROIArray.msg)
+
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES

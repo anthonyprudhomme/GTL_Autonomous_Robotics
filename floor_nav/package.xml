@@ -61,6 +61,11 @@
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>tf</run_depend>
 
+  <build_depend>face_detect_base</build_depend>
+  <run_depend>face_detect_base</run_depend>
+  <build_depend>message_generation</build_depend>
+  <run_depend>message_runtime</run_depend>
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -16,22 +16,31 @@ vel=0.5
 
 tc.WaitForAuto()
 try:
-    tc.Wander()
-    # Start the wait for roi task in the background
-    w4face = tc.WaitForFace(foreground=False,roi_x=1.,roi_y=6.,roi_radius=1.0)
-    # Prepare a condition so that the following gets executed only until the 
-    # Region of Interest is found
-    tc.addCondition(ConditionIsCompleted("Face detector",tc,w4face))
-
-    try:
-        tc.Wander()
+    
+    while(True):
+        # Prepare a condition so that the following gets executed only until the 
+        # Region of Interest is found
+        # w4face = tc.WaitForFace(foreground = False)
+        # tc.addCondition(ConditionIsCompleted("Face detector",tc,w4face))
+        # tc.Wander()
+        # Start the wait for roi task in the background
+        w4face = tc.WaitForFace(foreground = False)
+        tc.addCondition(ConditionIsCompleted("Face detector",tc,w4face))
         
-    except TaskConditionException, e:
-        rospy.loginfo("Wandering interrupted on condition: %s")
-        # This means the conditions were triggered. We need to react to it
-        # Conditions are cleared on trigger
-        tc.StareAtFace()
-		tc.SetHeading(target = 180, relative = True)
+        try:
+            tc.Wander()
+            
+        except TaskConditionException, e:
+            rospy.loginfo("Wandering interrupted on condition")
+            # This means the conditions were triggered. We need to react to it
+            # Conditions are cleared on trigger
+            tc.StareAtFace()
+            tc.Wait(duration=3.0)
+            tc.SetHeading(target = -4.71, relative = True)
+            #w4face = tc.WaitForFace(foreground = False)
+            #tc.addCondition(ConditionIsCompleted("Face detector",tc,w4face))
+            #tc.Wander()
+
 
 except TaskException, e:
     rospy.logerr("Exception caught: " + str(e))

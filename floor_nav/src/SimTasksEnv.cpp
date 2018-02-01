@@ -19,6 +19,7 @@ SimTasksEnv::SimTasksEnv(ros::NodeHandle & n) : task_manager_lib::TaskEnvironmen
     pointCloudSub = nh.subscribe("/vrep/depthSensor",1,&SimTasksEnv::pointCloudCallback,this);
     pointCloud2DSub = nh.subscribe("/vrep/hokuyoSensor",1,&SimTasksEnv::pointCloud2DCallback,this);
     laserscanSub = nh.subscribe("/scan",1,&SimTasksEnv::laserScanCallback,this);
+    faceDetectorSub = nh.subscribe("/rois",1,&SimTasksEnv::faceDetectedCallback,this);
     velPub = nh.advertise<geometry_msgs::Twist>(auto_topic,1);
 }
 
@@ -88,6 +89,15 @@ geometry_msgs::PoseStamped SimTasksEnv::getPoseStamped() const {
     return pose;
 }
 
+face_detect_base::ROIArray SimTasksEnv::getFaces() {
+    faces_detected_during_task = faces;
+    return faces;
+}
+
+face_detect_base::ROIArray SimTasksEnv::getFacesDetectedDuringTask() const{
+	return faces_detected_during_task;
+}
+
 void SimTasksEnv::publishVelocity(double linear, double angular) {
     geometry_msgs::Twist cmd;
     if (paused) {
@@ -150,5 +160,9 @@ void SimTasksEnv::laserScanCallback(const sensor_msgs::LaserScanConstPtr msg) {
         pointCloud2D[i].x = msg->ranges[i]*cos(msg->angle_min + i*msg->angle_increment);
         pointCloud2D[i].y = msg->ranges[i]*sin(msg->angle_min + i*msg->angle_increment);
     }
+}
+
+void SimTasksEnv::faceDetectedCallback(const face_detect_base::ROIArray msg) {
+    faces = msg;
 }
 
